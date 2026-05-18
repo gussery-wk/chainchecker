@@ -44,7 +44,13 @@ is_valid_csv_upload = function(file_upload){
     return(FALSE)
   }
   
-  grepl("\\.csv$", tolower(trimws(basename(file_upload$name))))
+  file_name = trimws(file_upload$name[[1]])
+  
+  if(file_name == "" || basename(file_name) != file_name || grepl("[/\\\\]", file_name)){
+    return(FALSE)
+  }
+  
+  grepl("\\.csv$", tolower(file_name))
 }
 
 #### ----------------------------------------------------------------------------------- ####
