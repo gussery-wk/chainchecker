@@ -3,12 +3,12 @@
 ### SERVER ###
 function(input, output, session) {
   
-  safe_language = function(){
+  safe_language = reactive({
     if(!is.null(input$language) && input$language %in% c("en", "fr")){
       return(input$language)
     }
     "en"
-  }
+  })
 
   #--------------------------------------------------------------------------------------------------
   #--------------------------------------------------------------------------------------------------
