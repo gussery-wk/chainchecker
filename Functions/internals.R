@@ -39,6 +39,15 @@ assert_TF = function(vec){
 }
 
 #### ----------------------------------------------------------------------------------- ####
+is_valid_csv_upload = function(file_upload){
+  if(is.null(file_upload$name) || length(file_upload$name) == 0){
+    return(FALSE)
+  }
+  
+  grepl("\\.csv$", tolower(trimws(basename(file_upload$name))))
+}
+
+#### ----------------------------------------------------------------------------------- ####
 check_line_upload = function(file_upload, input){
   
   #if empty upload
@@ -46,8 +55,8 @@ check_line_upload = function(file_upload, input){
     stop(safeError(translation[["error_no_line"]][[input$language]]))
   }
   
-  #check correct file type. This works for both comma separated and semicolon separated Csv
-  if(sum(grep(".csv", file_upload$datapath))==0){
+  #check correct file type
+  if(!is_valid_csv_upload(file_upload)){
     stop(safeError(translation[["error_filetype"]][[input$language]]))
   }
   
@@ -85,8 +94,8 @@ check_contacts_upload = function(file_upload, input){
     stop(safeError(translation[["error_contact"]][[input$language]]))
   }
   
-  #check correct file type. This works for both comma separated and semicolon separated Csv
-  if(sum(grep(".csv", file_upload$datapath))==0){
+  #check correct file type
+  if(!is_valid_csv_upload(file_upload)){
     stop(safeError(translation[["error_filetype"]][[input$language]]))
   }
   
