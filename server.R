@@ -3,6 +3,7 @@
 ### SERVER ###
 function(input, output, session) {
   
+  # Restrict language to supported values before using it in markdown file paths.
   safe_language = reactive({
     if(!is.null(input$language) && input$language %in% c("en", "fr")){
       return(input$language)
