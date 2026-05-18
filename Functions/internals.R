@@ -39,6 +39,7 @@ assert_TF = function(vec){
 }
 
 #### ----------------------------------------------------------------------------------- ####
+# Validate uploaded filename to ensure it is a direct .csv file name (no path components).
 is_valid_csv_upload = function(file_upload){
   if(is.null(file_upload$name) || length(file_upload$name) == 0){
     return(FALSE)
@@ -46,7 +47,7 @@ is_valid_csv_upload = function(file_upload){
   
   file_name = trimws(file_upload$name[[1]])
   
-  if(file_name == "" || basename(file_name) != file_name){
+  if(file_name == "" || basename(file_name) != file_name || grepl("[/\\\\]", file_name)){
     return(FALSE)
   }
   
