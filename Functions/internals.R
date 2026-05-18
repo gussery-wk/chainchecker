@@ -39,16 +39,41 @@ assert_TF = function(vec){
 }
 
 #### ----------------------------------------------------------------------------------- ####
+# Validate uploaded filename to ensure it is a direct .csv file name (no path components).
+is_valid_csv_upload = function(file_upload){
+  if(is.null(file_upload$name) || length(file_upload$name) == 0){
+    return(FALSE)
+  }
+  
+  file_name = trimws(file_upload$name[1])
+  
+  if(is.na(file_name) || file_name == "" || grepl("[/\\\\]", file_name)){
+    return(FALSE)
+  }
+  
+  grepl("\\.csv$", tolower(file_name))
+}
+
+#### ----------------------------------------------------------------------------------- ####
+safe_language_value = function(input){
+  if(!is.null(input$language) && input$language %in% c("en", "fr")){
+    return(input$language)
+  }
+  "en"
+}
+
+#### ----------------------------------------------------------------------------------- ####
 check_line_upload = function(file_upload, input){
+  language = safe_language_value(input)
   
   #if empty upload
   if(is.null(file_upload)){
-    stop(safeError(translation[["error_no_line"]][[input$language]]))
+    stop(safeError(translation[["error_no_line"]][[language]]))
   }
   
-  #check correct file type. This works for both comma separated and semicolon separated Csv
-  if(sum(grep(".csv", file_upload$datapath))==0){
-    stop(safeError(translation[["error_filetype"]][[input$language]]))
+  #check correct file type
+  if(!is_valid_csv_upload(file_upload)){
+    stop(safeError(translation[["error_filetype"]][[language]]))
   }
   
   #import
@@ -62,7 +87,7 @@ check_line_upload = function(file_upload, input){
   
   #check id's are unique
   if(length(unique(df$id))<nrow(df)){
-    stop(safeError(translation[["error_duplicate"]][[input$language]]))
+    stop(safeError(translation[["error_duplicate"]][[language]]))
   }
   
   #make sure id is first column
@@ -79,15 +104,16 @@ check_line_upload = function(file_upload, input){
 
 #### ----------------------------------------------------------------------------------- ####
 check_contacts_upload = function(file_upload, input){
+  language = safe_language_value(input)
   
   #if empty upload
   if(is.null(file_upload)){
-    stop(safeError(translation[["error_contact"]][[input$language]]))
+    stop(safeError(translation[["error_contact"]][[language]]))
   }
   
-  #check correct file type. This works for both comma separated and semicolon separated Csv
-  if(sum(grep(".csv", file_upload$datapath))==0){
-    stop(safeError(translation[["error_filetype"]][[input$language]]))
+  #check correct file type
+  if(!is_valid_csv_upload(file_upload)){
+    stop(safeError(translation[["error_filetype"]][[language]]))
   }
   
   #import
@@ -119,17 +145,18 @@ check_contacts_upload = function(file_upload, input){
 #### ----------------------------------------------------------------------------------- ####
 ### check the names are correct ###
 check_line_names = function(linelist, input){
+  language = safe_language_value(input)
   # must include `id`, `reported_onset_date` and `death_date`
   if(!"id" %in% names(linelist)){
-    stop(safeError(translation[["error_id_missing"]][[input$language]]))
+    stop(safeError(translation[["error_id_missing"]][[language]]))
   }
   
   if(!"reported_onset_date" %in% names(linelist)){
-    stop(safeError(translation[["error_report_missing"]][[input$language]]))
+    stop(safeError(translation[["error_report_missing"]][[language]]))
   }
   
   if(!"death_date" %in% names(linelist)){
-    stop(safeError(translation[["error_death_missing"]][[input$language]]))
+    stop(safeError(translation[["error_death_missing"]][[language]]))
   }
   
 }

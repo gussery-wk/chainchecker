@@ -3,6 +3,13 @@
 ### SERVER ###
 function(input, output, session) {
   
+  # Restrict language to supported values before using it in markdown file paths.
+  safe_language = reactive({
+    if(!is.null(input$language) && input$language %in% c("en", "fr")){
+      return(input$language)
+    }
+    "en"
+  })
 
   #--------------------------------------------------------------------------------------------------
   #--------------------------------------------------------------------------------------------------
@@ -10,7 +17,7 @@ function(input, output, session) {
   
   # HOME #
   output$aboutUI <- renderUI(
-    includeMarkdown(paste0("Documentation/About_", input$language,".md"))
+    includeMarkdown(paste0("Documentation/About_", safe_language(),".md"))
   )
   
   # TIMELINE #
@@ -86,7 +93,7 @@ function(input, output, session) {
   )
   
   output$upload_guideUI <- renderUI(
-    includeMarkdown(paste0("Documentation/Upload_Guidelines_", input$language,".md"))
+    includeMarkdown(paste0("Documentation/Upload_Guidelines_", safe_language(),".md"))
   )
   
   # EXPOSURE WINDOWS #
@@ -157,7 +164,7 @@ function(input, output, session) {
   
   # METHOD #
   output$methodUI <- renderUI(
-    includeMarkdown(paste0("Documentation/Methods_", input$language,".md"))
+    includeMarkdown(paste0("Documentation/Methods_", safe_language(),".md"))
   )
   
   sapply(names(outputOptions(output)),
@@ -462,5 +469,3 @@ function(input, output, session) {
     }
   )
 }
-
-
